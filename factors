@@ -1,0 +1,39 @@
+#!/usr/bin/python3
+import sys
+import time
+
+def factorize(number):
+    factors = []
+    for i in range(2, number + 1):
+        if number % i == 0:
+            factors.append(i)
+            factors.append(number // i)
+            break
+    return (factors)
+
+def main(input_file):
+    try:
+        start_time = time.time()
+
+        with open(input_file, 'r') as file:
+            lines = file.read().splitlines()
+            for line in lines:
+                number = int(line)
+                factors = factorize(number)
+                if len(factors) >= 2:
+                    p = factors[0]
+                    q = factors[1]
+                    print(f"{number}={p}*{q}")
+            elapsed_time = time.time() - start_time
+        print(f"Exec Time: {elapsed_time:.3f} seconds")
+    except FileNotFoundError:
+        print(f"File '{input_file}' not found.")
+    except ValueError:
+        print("Invalid input. Please make sure the file contains valid natural numbers greater than 1.")
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        sys.exit(1)
+    input_file = sys.argv[1]
+    main(input_file)
+
