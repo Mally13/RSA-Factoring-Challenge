@@ -17,8 +17,8 @@ def main(input_file):
             number = int(line)
             factors = factorize(number)
             if len(factors) >= 2:
-                p = factors[0]
-                q = factors[1]
+                p = factors[1]
+                q = factors[0]
                 print(f"{number}={p}*{q}")
 if __name__ == "__main__":
     if len(sys.argv) != 2:
