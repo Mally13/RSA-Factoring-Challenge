@@ -10,18 +10,29 @@ def factorize(number):
             break
     return (factors)
 
+
 def main(input_file):
-    with open(input_file, 'r') as file:
-        lines = file.read().splitlines()
-        for line in lines:
-            number = int(line)
-            factors = factorize(number)
-            if len(factors) >= 2:
-                p = factors[1]
-                q = factors[0]
-                print(f"{number}={p}*{q}")
+    try:
+        with open(input_file, 'r') as file:
+            lines = file.read().splitlines()
+            for line in lines:
+                number = int(line)
+                factors = factorize(number)
+                if len(factors) >= 2:
+                    p = factors[1]
+                    q = factors[0]
+                    print(f"{number}={p}*{q}")
+    except FileNotFoundError:
+        print(f"Excepton: File '{input_file}' not found.")
+    except ValueError:
+        print("Exception: Invalid input. File should only contain valid natural numbers greater than 1.")
+    except Exception as e:
+        print("Exception: {}".format(e), file=sys.stderr)
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
+        print("Usage: ./factors <file>")
         sys.exit(1)
     input_file = sys.argv[1]
     main(input_file)
