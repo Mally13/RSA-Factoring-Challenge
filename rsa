@@ -1,48 +1,37 @@
-#!/usr/bin/env bash
+#!/usr/bin/python3
+import sys
+import subprocess
 
-factorize()
-{
-	if [ $# -ne 3 ];
-        then
-                args=("$@")
-                count=0
-                num2=1
-                for a in ${args[*]};
-                do
-                        if [ $count -gt 1 ];
-                        then
-                                num2=$(echo $a*$num2 | bc)
-                        fi
-                        count=$((count + 1))
-                done
-        else
-                num2=$3
-        fi
+def rsa_factorize(number):
+    if number <= 1:
+        print(f"Invalid RSA modulus: {number}")
+        return
+    result = subprocess.run(['factor', str(number)], stdout=subprocess.PIPE, text=True)
+    factors = list(map(int, result.stdout.split()[1:]))
+    if len(factors) == 2:
+        p = factors[0]
+        q = factors[1]
+        print(f"{number}={p}*{q}")
+    else:
+        print(f"Unable to factorize {number} into two prime factors.")
 
-        num1=$2
-        num=$(echo "$1" | tr ':' '=')
+def main(input_file):
+    try:
+        with open(input_file, 'r') as file:
+            lines = file.read().splitlines()
+            for line in lines:
+                number = int(line)
+                rsa_factorize(number)
+    except FileNotFoundError:
+        print(f"Exception: File '{input_file}' not found.")
+    except (TypeError, ValueError):
+        print("Exception: Invalid input. File should only contain valid natural numbers greater than 1.")
+    except Exception as e:
+        print("Exception: {}".format(e), file=sys.stderr)
 
-        result=$(echo "if($num2 > $num1) 1 else 0" | bc)
-	        if ((result == 1)); then
-		        numcp=$num1
-		        num1=$num2
-		        num2=$numcp
-                fi
-
-        echo "$num$num1*$num2"
-}
-
-if [ $# -ne 1 ]
-then
-        echo 'Usage: rsa <file>'
-        exit 1
-else
-
-        while read i
-        do
-
-                result=$(factor "$i")
-                factorize $result
-
-        done < "$1"
-fi
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: ./rsa_factorize.py <file>")
+        sys.exit(1)
+    input_file = sys.argv[1]
+    main(input_file)
