@@ -31,7 +31,7 @@ def main(input_file):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: ./rsa_factorize.py <file>")
+        print("Usage: ./rsa <file>")
         sys.exit(1)
     input_file = sys.argv[1]
     main(input_file)
