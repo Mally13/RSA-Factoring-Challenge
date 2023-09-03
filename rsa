@@ -1,42 +1,48 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Function to check if a number is prime
-is_prime() {
-    local num=$1
-    if [ "$num" -le 1 ]; then
-        return 1
-    fi
-    for ((i=2; i*i<=num; i++)); do
-        if [ "$((num % i))" -eq 0 ]; then
-            return 1
+factorize()
+{
+	if [ $# -ne 3 ];
+        then
+                args=("$@")
+                count=0
+                num2=1
+                for a in ${args[*]};
+                do
+                        if [ $count -gt 1 ];
+                        then
+                                num2=$(echo $a*$num2 | bc)
+                        fi
+                        count=$((count + 1))
+                done
+        else
+                num2=$3
         fi
-    done
-    return 0
+
+        num1=$2
+        num=$(echo "$1" | tr ':' '=')
+
+        result=$(echo "if($num2 > $num1) 1 else 0" | bc)
+	        if ((result == 1)); then
+		        numcp=$num1
+		        num1=$num2
+		        num2=$numcp
+                fi
+
+        echo "$num$num1*$num2"
 }
 
-# Function to factorize the RSA number
-factorize_rsa() {
-    local n=$1
-    for ((p=2; p<=n; p++)); do
-        if [ "$((n % p))" -eq 0 ] && is_prime "$p"; then
-            q=$((n / p))
-            if is_prime "$q"; then
-                echo "$n=$p*$q"
-                return
-            fi
-        fi
-    done
-    echo "Unable to factorize $n."
-}
+if [ $# -ne 1 ]
+then
+        echo 'Usage: rsa <file>'
+        exit 1
+else
 
-# Main script starts here
-if [ $# -ne 1 ]; then
-    echo 'Usage: ./rsa <input_file>'
-    exit 1
+        while read i
+        do
+
+                result=$(factor "$i")
+                factorize $result
+
+        done < "$1"
 fi
-
-input_file="$1"
-
-while read -r number; do
-    factorize_rsa "$number"
-done < "$input_file"
