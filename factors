@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-check_factor()
+factorize()
 {
 	if [ $# -ne 3 ];
         then
@@ -34,7 +34,7 @@ check_factor()
 
 if [ $# -ne 1 ]
 then
-        echo 'Usage: factors <file>'
+        echo 'Usage: ./factors <file>'
         exit 1
 else
 
@@ -42,7 +42,7 @@ else
         do
 
                 result=$(factor "$i")
-                check_factor $result
+                factorize $result
 
         done < "$1"
 fi
